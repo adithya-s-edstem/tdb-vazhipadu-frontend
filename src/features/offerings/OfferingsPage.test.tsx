@@ -60,8 +60,18 @@ describe("OfferingsPage", () => {
 
     await user.type(screen.getByRole("searchbox", { name: "Search offerings" }), "xyz");
 
-    expect(screen.getByText('No offerings match "xyz".')).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent('No offerings match "xyz".');
     expect(screen.queryByRole("list", { name: "Offerings" })).not.toBeInTheDocument();
+  });
+
+  it("announces how many offerings match the search", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<OfferingsPage />);
+    await screen.findByRole("listitem", { name: "Pushpanjali" });
+
+    await user.type(screen.getByRole("searchbox", { name: "Search offerings" }), "push");
+
+    expect(screen.getByRole("status")).toHaveTextContent("1 offering available.");
   });
 
   it("lists the offerings of another temple when it is picked", async () => {
