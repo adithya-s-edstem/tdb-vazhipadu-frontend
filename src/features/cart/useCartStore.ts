@@ -4,8 +4,10 @@ import { addToCart, type CartableOffering } from "./domain/addToCart";
 import type { CartLine } from "./domain/CartLine";
 import { changeQuantity, type QuantityChange } from "./domain/changeQuantity";
 import { removeFromCart } from "./domain/removeFromCart";
+import { restoreCartLines } from "./restoreCartLines";
 
 export const CART_STORAGE_KEY = "vazhipadu-cart";
+export const CART_STORAGE_VERSION = 1;
 
 interface CartState {
   lines: CartLine[];
@@ -22,6 +24,12 @@ export const useCartStore = create<CartState>()(
       changeQuantity: (change) => set(({ lines }) => ({ lines: changeQuantity(lines, change) })),
       remove: (offeringId) => set(({ lines }) => ({ lines: removeFromCart(lines, offeringId) })),
     }),
-    { name: CART_STORAGE_KEY, partialize: ({ lines }) => ({ lines }) },
+    {
+      name: CART_STORAGE_KEY,
+      version: CART_STORAGE_VERSION,
+      partialize: ({ lines }) => ({ lines }),
+      migrate: (persistedCart) => ({ lines: restoreCartLines(persistedCart) }),
+      merge: (persistedCart, currentState) => ({ ...currentState, lines: restoreCartLines(persistedCart) }),
+    },
   ),
 );

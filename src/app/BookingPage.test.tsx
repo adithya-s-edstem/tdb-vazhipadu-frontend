@@ -1,9 +1,11 @@
 import { cleanup, screen, within } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { buildCartLine } from "../../test/buildCartLine";
 import { renderWithQueryClient } from "../../test/renderWithQueryClient";
 import { useEmptyCart } from "../../test/useEmptyCart";
 import { useInstantMockApi } from "../../test/useInstantMockApi";
+import { CART_STORAGE_KEY } from "../features/cart/useCartStore";
 import { BookingPage } from "./BookingPage";
 
 async function addToCart(user: UserEvent, offeringName: string): Promise<void> {
@@ -125,6 +127,21 @@ describe("BookingPage cart", () => {
 
     expect(within(cartLine("Pushpanjali")).getByText("Quantity 2")).toBeInTheDocument();
     expect(cartTotal()).toHaveTextContent("₹110");
+  });
+
+  it("drops saved cart lines that are no longer valid when the page loads", async () => {
+    const savedLines = [
+      buildCartLine({ quantity: 2 }),
+      buildCartLine({ offeringId: "vaikom-archana", name: "Archana", unitPrice: 50, quantity: 50 }),
+    ];
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ state: { lines: savedLines }, version: 0 }));
+    vi.resetModules();
+
+    const { BookingPage: ReloadedBookingPage } = await import("./BookingPage");
+    renderWithQueryClient(<ReloadedBookingPage />);
+
+    expect(within(cart()).queryByRole("listitem", { name: "Archana" })).not.toBeInTheDocument();
+    expect(cartTotal()).toHaveTextContent("₹60");
   });
 
   it("does not mix offerings from two temples in one cart", async () => {
