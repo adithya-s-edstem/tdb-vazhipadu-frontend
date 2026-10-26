@@ -3,6 +3,7 @@ import { buildCreateOrderRequest } from "../../../test/buildCreateOrderRequest";
 import { useInstantMockApi } from "../../../test/useInstantMockApi";
 import { createOrder } from "./createOrder";
 import { getOrders } from "./getOrders";
+import { configureMockApi } from "./mockApiSettings";
 
 describe("createOrder", () => {
   useInstantMockApi();
@@ -37,6 +38,43 @@ describe("createOrder", () => {
     const second = await createOrder(buildCreateOrderRequest());
 
     expect(second.id).not.toBe(first.id);
+  });
+
+  it("stores one order when the same request is sent twice at once", async () => {
+    const request = buildCreateOrderRequest();
+    const before = await getOrders({});
+
+    const [first, second] = await Promise.all([createOrder(request), createOrder(request)]);
+    const after = await getOrders({});
+
+    expect(second).toEqual(first);
+    expect(after.total).toBe(before.total + 1);
+  });
+
+  it("returns the first order again when a request is resent after it succeeded", async () => {
+    const request = buildCreateOrderRequest();
+    const first = await createOrder(request);
+
+    const resent = await createOrder(request);
+
+    expect(resent).toEqual(first);
+  });
+
+  it("places the order when a failed attempt is retried with the same key", async () => {
+    const request = buildCreateOrderRequest();
+    configureMockApi({ failureRate: 1 });
+    await createOrder(request).catch(() => undefined);
+    configureMockApi({ failureRate: 0 });
+
+    const order = await createOrder(request);
+
+    expect(order.status).toBe("confirmed");
+  });
+
+  it("rejects an order without an idempotency key", async () => {
+    await expect(createOrder(buildCreateOrderRequest({ idempotencyKey: " " }))).rejects.toMatchObject({
+      code: "invalid-request",
+    });
   });
 
   it("rejects an order without lines", async () => {

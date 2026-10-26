@@ -6,4 +6,5 @@ export interface Database {
   temples: Temple[];
   offerings: Offering[];
   orders: Order[];
+  orderIdsByIdempotencyKey: Map<string, string>;
 }

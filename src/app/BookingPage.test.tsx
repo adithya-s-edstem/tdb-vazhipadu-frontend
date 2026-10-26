@@ -2,6 +2,7 @@ import { cleanup, screen, within } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { buildCartLine } from "../../test/buildCartLine";
+import { devoteeDetails, fillDevoteeDetails } from "../../test/fillDevoteeDetails";
 import { renderWithQueryClient } from "../../test/renderWithQueryClient";
 import { useEmptyCart } from "../../test/useEmptyCart";
 import { useInstantMockApi } from "../../test/useInstantMockApi";
@@ -28,25 +29,6 @@ async function fillCartWithPushpanjaliAndArchana(user: UserEvent): Promise<void>
   await addToCart(user, "Pushpanjali");
   await addToCart(user, "Pushpanjali");
   await addToCart(user, "Archana");
-}
-
-function devoteeDetails(): HTMLElement {
-  return screen.getByRole("region", { name: "Devotee details" });
-}
-
-function detailsStatus(): HTMLElement {
-  return within(devoteeDetails()).getByRole("status");
-}
-
-async function fillDevoteeDetails(user: UserEvent): Promise<void> {
-  await user.type(within(devoteeDetails()).getByLabelText("Name"), "Meera Nair");
-  await user.type(within(devoteeDetails()).getByLabelText("Phone"), "9847000001");
-  await user.selectOptions(within(devoteeDetails()).getByLabelText("Nakshatra"), "Rohini");
-  await user.type(within(devoteeDetails()).getByLabelText("Offering date"), "2026-11-02");
-}
-
-async function checkDetails(user: UserEvent): Promise<void> {
-  await user.click(within(devoteeDetails()).getByRole("button", { name: "Check details" }));
 }
 
 describe("BookingPage cart", () => {
@@ -171,42 +153,17 @@ describe("BookingPage devotee details", () => {
     expect(screen.getByRole("region", { name: "Devotee details" })).toBeInTheDocument();
   });
 
-  it("confirms the details once every field is valid", async () => {
+  it("places an order for the cart and shows its order number and total", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<BookingPage />);
-    await addToCart(user, "Pushpanjali");
-
+    await fillCartWithPushpanjaliAndArchana(user);
     await fillDevoteeDetails(user);
-    await checkDetails(user);
 
-    expect(detailsStatus()).toHaveTextContent("Details look good.");
-  });
+    await user.click(within(devoteeDetails()).getByRole("button", { name: "Place order" }));
 
-  it("withdraws the confirmation as soon as a field is changed", async () => {
-    const user = userEvent.setup();
-    renderWithQueryClient(<BookingPage />);
-    await addToCart(user, "Pushpanjali");
-    await fillDevoteeDetails(user);
-    await checkDetails(user);
-
-    await user.clear(within(devoteeDetails()).getByLabelText("Phone"));
-
-    expect(detailsStatus()).toBeEmptyDOMElement();
-  });
-
-  it("does not confirm details alongside an error after a later failed check", async () => {
-    const user = userEvent.setup();
-    renderWithQueryClient(<BookingPage />);
-    await addToCart(user, "Pushpanjali");
-    await fillDevoteeDetails(user);
-    await checkDetails(user);
-    const phone = within(devoteeDetails()).getByLabelText("Phone");
-    await user.clear(phone);
-    await user.type(phone, "12345");
-
-    await checkDetails(user);
-
-    expect(phone).toBeInvalid();
-    expect(detailsStatus()).toBeEmptyDOMElement();
+    const confirmation = await screen.findByRole("region", { name: "Order placed" });
+    expect(confirmation).toHaveTextContent("Order number VZ-1051");
+    expect(confirmation).toHaveTextContent("Total ₹110");
+    expect(cart()).toHaveTextContent("Your cart is empty.");
   });
 });

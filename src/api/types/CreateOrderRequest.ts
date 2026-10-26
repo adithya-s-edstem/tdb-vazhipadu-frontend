@@ -1,6 +1,7 @@
 import type { Devotee } from "./Devotee";
 
 export interface CreateOrderRequest {
+  idempotencyKey: string;
   templeId: string;
   devotee: Devotee;
   offeringDate: string;

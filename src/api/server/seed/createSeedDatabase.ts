@@ -6,5 +6,10 @@ import { SEED_TEMPLES } from "./temples";
 export function createSeedDatabase(today: Date): Database {
   const temples = structuredClone(SEED_TEMPLES);
   const offerings = structuredClone(SEED_OFFERINGS);
-  return { temples, offerings, orders: seedOrders({ today, temples, offerings }) };
+  return {
+    temples,
+    offerings,
+    orders: seedOrders({ today, temples, offerings }),
+    orderIdsByIdempotencyKey: new Map(),
+  };
 }
