@@ -9,10 +9,10 @@ const ISO_DATE_FORMAT = "yyyy-MM-dd";
 
 interface OrderFormProps {
   onSubmit: (details: OrderDetails) => void;
-  onDetailsInvalidated: () => void;
+  isSubmitting: boolean;
 }
 
-export function OrderForm({ onSubmit, onDetailsInvalidated }: OrderFormProps) {
+export function OrderForm({ onSubmit, isSubmitting }: OrderFormProps) {
   const {
     register,
     handleSubmit,
@@ -23,12 +23,7 @@ export function OrderForm({ onSubmit, onDetailsInvalidated }: OrderFormProps) {
   });
 
   return (
-    <form
-      noValidate
-      onChange={onDetailsInvalidated}
-      onSubmit={handleSubmit((details) => onSubmit(details), onDetailsInvalidated)}
-      className="flex flex-col gap-4"
-    >
+    <form noValidate onSubmit={handleSubmit((details) => onSubmit(details))} className="flex flex-col gap-4">
       <FormField
         label="Name"
         errorMessage={errors.name?.message}
@@ -81,8 +76,12 @@ export function OrderForm({ onSubmit, onDetailsInvalidated }: OrderFormProps) {
           />
         )}
       />
-      <button type="submit" className="rounded bg-amber-700 px-4 py-2 font-semibold text-white">
-        Check details
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="rounded bg-amber-700 px-4 py-2 font-semibold text-white disabled:opacity-60"
+      >
+        {isSubmitting ? "Placing order…" : "Place order"}
       </button>
     </form>
   );

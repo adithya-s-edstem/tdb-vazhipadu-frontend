@@ -14,6 +14,7 @@ interface CartState {
   add: (offering: CartableOffering) => void;
   changeQuantity: (change: QuantityChange) => void;
   remove: (offeringId: string) => void;
+  empty: () => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -23,6 +24,7 @@ export const useCartStore = create<CartState>()(
       add: (offering) => set(({ lines }) => ({ lines: addToCart(lines, offering) })),
       changeQuantity: (change) => set(({ lines }) => ({ lines: changeQuantity(lines, change) })),
       remove: (offeringId) => set(({ lines }) => ({ lines: removeFromCart(lines, offeringId) })),
+      empty: () => set({ lines: [] }),
     }),
     {
       name: CART_STORAGE_KEY,
