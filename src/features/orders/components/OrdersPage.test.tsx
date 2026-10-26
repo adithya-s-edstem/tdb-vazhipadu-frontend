@@ -1,7 +1,8 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { configureMockApi, getOrders } from "../../../api/client";
-import type { OrdersQuery } from "../../../api/types";
+import { configureMockApi, createOrder, getOrders } from "../../../api/client";
+import { DEFAULT_PAGE_SIZE, type OrdersQuery } from "../../../api/types";
+import { buildCreateOrderRequest } from "../../../../test/buildCreateOrderRequest";
 import { renderRoute } from "../../../../test/renderRoute";
 import { useInstantMockApi } from "../../../../test/useInstantMockApi";
 import { formatIsoDate } from "../../../shared/format/formatIsoDate";
@@ -31,6 +32,13 @@ async function firstOrderOf(query: OrdersQuery) {
     throw new Error("Seed has no order for this query");
   }
   return order;
+}
+
+async function fillConfirmedOrdersUntilOneSpillsOntoPageTwo() {
+  const { total } = await getOrders({ status: "confirmed" });
+  for (let created = total; created <= DEFAULT_PAGE_SIZE; created += 1) {
+    await createOrder(buildCreateOrderRequest());
+  }
 }
 
 describe("OrdersPage", () => {
@@ -126,6 +134,18 @@ describe("OrdersPage", () => {
 
     expect(await screen.findByText(/Page 5 of 5/)).toBeInTheDocument();
     expect(currentUrl()).toBe("/orders?page=5");
+  });
+
+  it("moves to the new last page when cancelling empties the current one", async () => {
+    await fillConfirmedOrdersUntilOneSpillsOntoPageTwo();
+    const { user, currentUrl } = renderRoute("/orders?status=confirmed&page=2");
+    expect(await findOrderRows()).toHaveLength(1);
+
+    await user.click(screen.getByRole("button", { name: /^Cancel order / }));
+    await user.click(screen.getByRole("button", { name: "Cancel order" }));
+
+    expect(await screen.findByText(/Page 1 of 1/)).toBeInTheDocument();
+    expect(currentUrl()).toBe("/orders?status=confirmed");
   });
 
   it("offers a retry when orders fail to load", async () => {
