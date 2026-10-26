@@ -105,16 +105,29 @@ describe("OrdersResults loading", () => {
     expect(orderResults()).toHaveAttribute("aria-busy", "false");
   });
 
-  it("disables the page buttons while a page loads so repeated clicks do not skip pages", async () => {
-    const { user, currentUrl } = await openOrdersWithSlowApi();
+  it("marks the page buttons disabled while a page loads so repeated clicks do not skip pages", async () => {
+    const { user, currentUrl } = await openOrdersWithSlowApi("/orders?page=2");
 
     await user.click(screen.getByRole("button", { name: "Next" }));
 
-    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Previous" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Next" })).toHaveAttribute("aria-disabled", "true");
+    expect(screen.getByRole("button", { name: "Previous" })).toHaveAttribute("aria-disabled", "true");
     await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(screen.getByRole("button", { name: "Previous" }));
+    expect(await screen.findByText(/Page 3 of 5/)).toBeInTheDocument();
+    expect(currentUrl()).toBe("/orders?page=3");
+  });
+
+  it("keeps keyboard focus on Next while the next page loads", async () => {
+    const { user } = await openOrdersWithSlowApi();
+    screen.getByRole("button", { name: "Next" }).focus();
+
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Next" })).toHaveFocus();
     expect(await screen.findByText(/Page 2 of 5/)).toBeInTheDocument();
-    expect(currentUrl()).toBe("/orders?page=2");
+    expect(screen.getByRole("button", { name: "Next" })).toHaveFocus();
   });
 
   it("shows the empty state only after loading finishes, not over the previous rows", async () => {
