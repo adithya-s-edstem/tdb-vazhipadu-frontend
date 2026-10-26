@@ -1,3 +1,4 @@
+import { ApiError } from "../../types/ApiError";
 import type { Order } from "../../types/Order";
 import type { OrdersPage } from "../../types/OrdersPage";
 import { DEFAULT_PAGE_SIZE, type OrdersQuery } from "../../types/OrdersQuery";
@@ -8,9 +9,17 @@ const FIRST_PAGE = 1;
 export function searchOrders(database: Database, query: OrdersQuery): OrdersPage {
   const page = query.page ?? FIRST_PAGE;
   const pageSize = query.pageSize ?? DEFAULT_PAGE_SIZE;
+  requirePositiveWholeNumber("page", page);
+  requirePositiveWholeNumber("pageSize", pageSize);
   const matching = database.orders.filter((order) => matchesQuery(order, query)).sort(byNewestPlaced);
   const start = (page - 1) * pageSize;
   return { orders: matching.slice(start, start + pageSize), total: matching.length, page, pageSize };
+}
+
+function requirePositiveWholeNumber(field: string, value: number): void {
+  if (!Number.isInteger(value) || value < 1) {
+    throw new ApiError("invalid-request", `${field} must be a whole number of at least 1`);
+  }
 }
 
 function matchesQuery(order: Order, { status, offeringDate, phone }: OrdersQuery): boolean {

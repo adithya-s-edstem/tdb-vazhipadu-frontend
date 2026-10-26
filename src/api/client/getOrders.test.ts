@@ -46,6 +46,14 @@ describe("getOrders", () => {
     expect(page.total).toBe(50);
   });
 
+  it.each([0, -1, 1.5])("rejects page %s as an invalid request", async (page) => {
+    await expect(getOrders({ page })).rejects.toMatchObject({ code: "invalid-request" });
+  });
+
+  it.each([0, -10, 2.5])("rejects page size %s as an invalid request", async (pageSize) => {
+    await expect(getOrders({ pageSize })).rejects.toMatchObject({ code: "invalid-request" });
+  });
+
   it("shows only orders with the chosen status and counts only those", async () => {
     const page = await getOrders({ status: "cancelled", pageSize: 50 });
 

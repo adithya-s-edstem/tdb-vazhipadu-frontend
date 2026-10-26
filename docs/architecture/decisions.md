@@ -68,6 +68,7 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Context: P4 needs filters, pages and a total count; its open questions are not decided yet.
 - Decision: optional `status`, `offeringDate` (single `YYYY-MM-DD` day) and `phone` (partial match, spaces ignored);
   `page` is 1-based, `pageSize` defaults to 10; newest placed first. A page past the end returns no orders and the
-  real total. P4 may extend this.
+  real total. A `page` or `pageSize` that is not a whole number of at least 1 rejects with `invalid-request`.
+  P4 may extend this.
 - Alternatives: cursor pagination (no page numbers for the URL); returning all orders and paging in the UI (does not
   behave like a real API).
