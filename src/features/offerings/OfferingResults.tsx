@@ -17,7 +17,7 @@ export function OfferingResults({ templeId, searchTerm }: OfferingResultsProps) 
   if (offerings.isPending) {
     return <LoadingStatus message="Loading offerings…" />;
   }
-  if (offerings.isError) {
+  if (offerings.isLoadingError) {
     return (
       <RetryableError
         message="Could not load offerings."

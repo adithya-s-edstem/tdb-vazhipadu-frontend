@@ -10,7 +10,7 @@ export function OfferingsPage() {
   if (temples.isPending) {
     return <LoadingStatus message="Loading temples…" />;
   }
-  if (temples.isError) {
+  if (temples.isLoadingError) {
     return (
       <RetryableError
         message="Could not load temples."

@@ -2,6 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { configureMockApi } from "../../api/client";
+import { refreshQueriesInBackground } from "../../../test/refreshQueriesInBackground";
 import { renderWithQueryClient } from "../../../test/renderWithQueryClient";
 import { useInstantMockApi } from "../../../test/useInstantMockApi";
 import { OfferingsPage } from "./OfferingsPage";
@@ -84,6 +85,37 @@ describe("OfferingsPage", () => {
     await user.click(within(alert).getByRole("button", { name: "Try again" }));
 
     expect(await screen.findByRole("listitem", { name: "Pushpanjali" })).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("keeps the temple, search and offerings on screen when a background refresh fails", async () => {
+    const user = userEvent.setup();
+    const { queryClient } = renderWithQueryClient(<OfferingsPage />);
+    await screen.findByRole("listitem", { name: "Pushpanjali" });
+    await user.type(screen.getByRole("searchbox", { name: "Search offerings" }), "push");
+    configureMockApi({ failureRate: 1 });
+
+    await refreshQueriesInBackground(queryClient);
+
+    expect(screen.getByRole("combobox", { name: "Temple" })).toHaveDisplayValue("Vaikom Mahadeva Temple");
+    expect(screen.getByRole("searchbox", { name: "Search offerings" })).toHaveValue("push");
+    expect(await findOfferingNames()).toEqual(["Pushpanjali"]);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("keeps showing cached offerings when returning to a temple whose refresh fails", async () => {
+    const user = userEvent.setup();
+    const { queryClient } = renderWithQueryClient(<OfferingsPage />);
+    const templePicker = await screen.findByRole("combobox", { name: "Temple" });
+    await screen.findByRole("listitem", { name: "Pushpanjali" });
+    await user.selectOptions(templePicker, "Ettumanoor Mahadeva Temple");
+    await screen.findByRole("listitem", { name: "Thulabharam" });
+    configureMockApi({ failureRate: 1 });
+
+    await user.selectOptions(templePicker, "Vaikom Mahadeva Temple");
+    await refreshQueriesInBackground(queryClient);
+
+    expect(screen.getByRole("listitem", { name: "Pushpanjali" })).toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
