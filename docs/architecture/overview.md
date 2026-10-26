@@ -27,8 +27,9 @@ ui (pages, components)
 
 - **Backend** (`src/api/server/`): owns data, rules (cancellation, totals, idempotency) and network simulation.
   It never imports from the frontend.
-- **API client** (`src/api/`): the only module the frontend calls. Exposes the operations in
-  [../product/mock-api.md](../product/mock-api.md) and the shared types.
+- **API client** (`src/api/client/` and `src/api/types/`): the only paths the frontend may import. Exposes the
+  operations in [../product/mock-api.md](../product/mock-api.md) and the shared types. Never import
+  `src/api/server/` from the frontend.
 - **Features** (`src/features/<feature>/`): one folder per problem area, containing hooks, components and tests.
 - **Shared** (`src/shared/`): formatting, generic UI primitives. Nothing feature-specific.
 
