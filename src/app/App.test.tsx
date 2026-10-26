@@ -83,7 +83,7 @@ describe("App keyboard booking", () => {
     expect(screen.queryByRole("region", { name: "Order placed" })).not.toBeInTheDocument();
   });
 
-  it("takes the devotee to the first invalid field when details are missing", async () => {
+  it("moves to the first invalid field when Place order is tabbed to and pressed with Enter", async () => {
     const { user } = renderRoute("/");
     await tabAndPress(user, await screen.findByRole("button", { name: "Add Archana to cart" }), "{Enter}");
     await tabAndType(user, "Name", "Meera Nair");
