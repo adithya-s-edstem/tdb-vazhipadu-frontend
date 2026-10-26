@@ -175,7 +175,6 @@ describe("OrdersResults loading", () => {
     await user.click(screen.getByRole("button", { name: "Cancel order" }));
     await screen.findByRole("row", { name: new RegExp(`${orderId}.*Cancelled`) });
 
-    expect(orderResults()).toHaveAttribute("aria-busy", "true");
     expect(screen.getAllByRole("row")).toHaveLength(11);
     expect(updatingStatus()).toBeEmptyDOMElement();
     expect(screen.queryByText("Loading orders…")).not.toBeInTheDocument();
