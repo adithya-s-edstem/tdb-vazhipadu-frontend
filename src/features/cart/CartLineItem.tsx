@@ -28,7 +28,7 @@ export function CartLineItem({ line }: CartLineItemProps) {
           type="button"
           onClick={() => remove(line.offeringId)}
           aria-label={`Remove ${line.name}`}
-          className="text-sm font-medium text-red-800 underline"
+          className="min-h-10 px-2 text-sm font-medium text-red-800 underline"
         >
           Remove
         </button>

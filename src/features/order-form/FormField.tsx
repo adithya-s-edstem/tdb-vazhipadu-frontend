@@ -13,7 +13,7 @@ interface FormFieldProps {
 }
 
 export const FIELD_CONTROL_CLASSES =
-  "rounded border border-stone-300 bg-white px-3 py-2 aria-[invalid=true]:border-red-700 aria-[invalid=true]:bg-red-50";
+  "rounded border border-stone-500 bg-white px-3 py-2 aria-[invalid=true]:border-red-700 aria-[invalid=true]:bg-red-50";
 
 export function FormField({ label, errorMessage, renderControl }: FormFieldProps) {
   const controlId = useId();

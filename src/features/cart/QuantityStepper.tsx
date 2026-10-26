@@ -8,7 +8,7 @@ interface QuantityStepperProps {
 }
 
 const STEP_BUTTON_CLASSES =
-  "h-8 w-8 rounded border border-stone-300 bg-white font-semibold disabled:cursor-not-allowed disabled:opacity-40";
+  "h-10 w-10 rounded border border-stone-500 bg-white font-semibold disabled:cursor-not-allowed disabled:opacity-40";
 
 export function QuantityStepper({ offeringId, offeringName, quantity }: QuantityStepperProps) {
   const changeQuantity = useCartStore((state) => state.changeQuantity);

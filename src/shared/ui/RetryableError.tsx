@@ -6,7 +6,10 @@ interface RetryableErrorProps {
 
 export function RetryableError({ message, isRetrying, onRetry }: RetryableErrorProps) {
   return (
-    <div role="alert" className="flex items-center justify-between gap-4 rounded border border-red-300 bg-red-50 p-4">
+    <div
+      role="alert"
+      className="flex flex-wrap items-center justify-between gap-4 rounded border border-red-300 bg-red-50 p-4"
+    >
       <p className="text-red-800">{message}</p>
       <button
         type="button"

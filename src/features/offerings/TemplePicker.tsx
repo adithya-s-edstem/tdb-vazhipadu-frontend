@@ -13,7 +13,7 @@ export function TemplePicker({ temples, selectedTempleId, onSelect }: TemplePick
       <select
         value={selectedTempleId}
         onChange={(event) => onSelect(event.target.value)}
-        className="rounded border border-stone-300 bg-white px-3 py-2 font-normal"
+        className="rounded border border-stone-500 bg-white px-3 py-2 font-normal"
       >
         {temples.map((temple) => (
           <option key={temple.id} value={temple.id}>
