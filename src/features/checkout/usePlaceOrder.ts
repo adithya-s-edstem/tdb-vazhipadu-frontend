@@ -16,13 +16,13 @@ export interface PlaceOrder {
 
 export function usePlaceOrder(): PlaceOrder {
   const lines = useCartStore((state) => state.lines);
-  const emptyCart = useCartStore((state) => state.empty);
+  const removeOrderedLines = useCartStore((state) => state.removeOrdered);
   const idempotencyKey = useRef<string | undefined>(undefined);
   const mutation = useMutation({
     mutationFn: createOrder,
-    onSuccess: () => {
+    onSuccess: (_order, request) => {
       idempotencyKey.current = undefined;
-      emptyCart();
+      removeOrderedLines(request.lines);
     },
   });
 

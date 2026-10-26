@@ -67,6 +67,20 @@ describe("Checkout", () => {
     expect(screen.queryByRole("region", { name: "Devotee details" })).not.toBeInTheDocument();
   });
 
+  it("keeps a quantity added while the order is being placed", async () => {
+    const user = userEvent.setup();
+    configureMockApi({ minLatencyMs: SLOW_LATENCY_MS, maxLatencyMs: SLOW_LATENCY_MS });
+    renderWithQueryClient(<Checkout />);
+    await fillDevoteeDetails(user);
+
+    await user.click(placeOrderButton());
+    await user.click(within(cart()).getByRole("button", { name: "Increase quantity of Pushpanjali" }));
+    await findConfirmation();
+
+    expect(within(cart()).getByRole("listitem", { name: "Pushpanjali" })).toHaveTextContent("Quantity 1");
+    expect(within(cart()).queryByRole("listitem", { name: "Archana" })).not.toBeInTheDocument();
+  });
+
   it("creates exactly one order when Place order is double-clicked", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<Checkout />);
