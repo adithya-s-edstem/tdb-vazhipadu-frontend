@@ -51,7 +51,7 @@ describe("App keyboard booking", () => {
   useInstantMockApi();
   useEmptyCart();
 
-  it("books offerings from start to confirmation with the keyboard alone", async () => {
+  it("books to confirmation by keyboard, except choosing from the native nakshatra select", async () => {
     const { user } = renderRoute("/");
     await tabAndPress(user, await screen.findByRole("button", { name: "Add Pushpanjali to cart" }), "{Enter}");
     await tabAndPress(user, screen.getByRole("button", { name: "Add Archana to cart" }), " ");
