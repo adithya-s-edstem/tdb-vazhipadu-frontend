@@ -4,12 +4,13 @@ import { FIRST_PAGE } from "../domain/ordersFiltersSearchParams";
 
 interface OrdersPaginationProps {
   ordersPage: Pick<OrdersPage, "page" | "pageSize" | "total">;
+  isDisabled: boolean;
   onPageChange: (page: number) => void;
 }
 
 const BUTTON_CLASSES = "rounded border border-amber-700 px-3 py-1 disabled:opacity-40";
 
-export function OrdersPagination({ ordersPage, onPageChange }: OrdersPaginationProps) {
+export function OrdersPagination({ ordersPage, isDisabled, onPageChange }: OrdersPaginationProps) {
   const { page } = ordersPage;
   const lastPage = lastPageNumber(ordersPage);
 
@@ -18,7 +19,7 @@ export function OrdersPagination({ ordersPage, onPageChange }: OrdersPaginationP
       <button
         type="button"
         className={BUTTON_CLASSES}
-        disabled={page <= FIRST_PAGE}
+        disabled={isDisabled || page <= FIRST_PAGE}
         onClick={() => onPageChange(page - 1)}
       >
         Previous
@@ -29,7 +30,7 @@ export function OrdersPagination({ ordersPage, onPageChange }: OrdersPaginationP
       <button
         type="button"
         className={BUTTON_CLASSES}
-        disabled={page >= lastPage}
+        disabled={isDisabled || page >= lastPage}
         onClick={() => onPageChange(page + 1)}
       >
         Next
