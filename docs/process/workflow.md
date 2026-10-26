@@ -17,7 +17,7 @@
 
 - All work, including docs and setup, goes through an issue and a PR. No direct commits to `main`.
 - One problem, one issue, one branch, one PR.
-- `npm run build`, `npm run lint` and `npm test` pass before a PR is opened.
+- `npm run build`, `npm run lint` and `npm test -- --run` pass before a PR is opened.
 - Every PR fills in **Assumptions** even if the answer is "None".
 - PRs merge in milestone order. A ticket that depends on another waits for that merge, then rebases on `main`.
 

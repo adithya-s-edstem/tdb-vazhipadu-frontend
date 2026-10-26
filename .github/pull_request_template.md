@@ -12,7 +12,7 @@
 
 ```
 npm install
-npm test
+npm test -- --run
 npm run build
 ```
 
