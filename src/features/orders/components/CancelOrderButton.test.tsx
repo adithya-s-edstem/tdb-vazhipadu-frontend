@@ -71,8 +71,8 @@ describe("CancelOrderButton", () => {
     expect(within(row).queryByRole("button", { name: `Cancel order ${orderId}` })).not.toBeInTheDocument();
   });
 
-  it("offers no cancel button for cancelled or completed orders", async () => {
-    renderRoute("/orders?status=completed");
+  it.each(["completed", "cancelled"])("offers no cancel button for %s orders", async (status) => {
+    renderRoute(`/orders?status=${status}`);
 
     await screen.findByRole("navigation", { name: "Pages" });
 
