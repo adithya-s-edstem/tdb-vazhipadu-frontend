@@ -109,3 +109,34 @@ describe("BookingPage cart", () => {
     expect(screen.getByText(/Your cart has offerings from another temple/)).toBeInTheDocument();
   });
 });
+
+describe("BookingPage devotee details", () => {
+  useInstantMockApi();
+  useEmptyCart();
+
+  it("asks for devotee details only once the cart has an offering", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<BookingPage />);
+    await screen.findByRole("listitem", { name: "Pushpanjali" });
+    expect(screen.queryByRole("region", { name: "Devotee details" })).not.toBeInTheDocument();
+
+    await addToCart(user, "Pushpanjali");
+
+    expect(screen.getByRole("region", { name: "Devotee details" })).toBeInTheDocument();
+  });
+
+  it("confirms the details once every field is valid", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<BookingPage />);
+    await addToCart(user, "Pushpanjali");
+    const details = screen.getByRole("region", { name: "Devotee details" });
+
+    await user.type(within(details).getByLabelText("Name"), "Meera Nair");
+    await user.type(within(details).getByLabelText("Phone"), "9847000001");
+    await user.selectOptions(within(details).getByLabelText("Nakshatra"), "Rohini");
+    await user.type(within(details).getByLabelText("Offering date"), "2026-11-02");
+    await user.click(within(details).getByRole("button", { name: "Check details" }));
+
+    expect(within(details).getByRole("status")).toHaveTextContent("Details look good.");
+  });
+});

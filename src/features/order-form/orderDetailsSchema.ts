@@ -12,7 +12,7 @@ export const orderDetailsSchema = z.object({
     .string()
     .trim()
     .min(1, "Enter the devotee's name.")
-    .max(MAX_NAME_LENGTH, `Keep the name under ${MAX_NAME_LENGTH} characters.`),
+    .max(MAX_NAME_LENGTH, `Use at most ${MAX_NAME_LENGTH} characters.`),
   phone: z.string().trim().min(1, "Enter a phone number.").transform(toMobileOrReportIssue),
   nakshatra: z.enum(NAKSHATRAS, { error: "Choose a nakshatra." }),
   offeringDate: z
