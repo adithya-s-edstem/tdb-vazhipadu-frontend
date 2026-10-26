@@ -17,5 +17,5 @@ P3 to keep PR order P1 to P5.
 
 ## Work outside the problems
 
-Docs, tooling and harness changes that are not part of a problem still get their own issue and PR, without a
+Docs and tooling changes that are not part of a problem still get their own issue and PR, without a
 milestone. Never commit to `main` directly, not even for docs.
