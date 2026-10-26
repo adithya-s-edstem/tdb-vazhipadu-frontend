@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { buildCreateOrderRequest } from "../../../test/buildCreateOrderRequest";
 import { useInstantMockApi } from "../../../test/useInstantMockApi";
+import { createOrder } from "./createOrder";
 import { getOrders } from "./getOrders";
 
 const TODAY = new Date(2026, 9, 26);
@@ -70,6 +72,15 @@ describe("getOrders", () => {
     const page = await getOrders({ phone: " 98470 10137 ", pageSize: 50 });
 
     expect(page.orders.map((order) => order.devotee.phone)).toEqual(["9847010137"]);
+  });
+
+  it("finds an order booked with a spaced phone number when searching without spaces", async () => {
+    const devotee = { name: "Ravi Varma", phone: "99999 88888", nakshatra: "Makam" } as const;
+    const order = await createOrder(buildCreateOrderRequest({ devotee }));
+
+    const page = await getOrders({ phone: "9999988888" });
+
+    expect(page.orders).toEqual([order]);
   });
 
   it("combines filters", async () => {

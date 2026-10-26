@@ -14,12 +14,15 @@ export function searchOrders(database: Database, query: OrdersQuery): OrdersPage
 }
 
 function matchesQuery(order: Order, { status, offeringDate, phone }: OrdersQuery): boolean {
-  const searchedDigits = phone?.replace(/\s/g, "") ?? "";
   return (
     (status === undefined || order.status === status) &&
     (offeringDate === undefined || order.offeringDate === offeringDate) &&
-    order.devotee.phone.includes(searchedDigits)
+    withoutSpaces(order.devotee.phone).includes(withoutSpaces(phone ?? ""))
   );
+}
+
+function withoutSpaces(phone: string): string {
+  return phone.replace(/\s/g, "");
 }
 
 function byNewestPlaced(first: Order, second: Order): number {
