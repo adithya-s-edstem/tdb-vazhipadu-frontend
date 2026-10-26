@@ -1,4 +1,4 @@
-import { formatISO } from "date-fns";
+import { formatISO, isBefore, parseISO, startOfDay } from "date-fns";
 import { ApiError } from "../../types/ApiError";
 import type { CreateOrderRequest, RequestedLine } from "../../types/CreateOrderRequest";
 import type { Offering } from "../../types/Offering";
@@ -11,6 +11,9 @@ import { orderTotal } from "./orderTotal";
 export function placeOrder(database: Database, request: CreateOrderRequest, placedAt: Date): Order {
   if (request.lines.length === 0) {
     throw new ApiError("invalid-request", "An order needs at least one offering");
+  }
+  if (isBefore(parseISO(request.offeringDate), startOfDay(placedAt))) {
+    throw new ApiError("invalid-request", "The offering date cannot be in the past");
   }
   const lines = request.lines.map((line) => priceLine(database.offerings, request.templeId, line));
   const order: Order = {

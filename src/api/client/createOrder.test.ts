@@ -63,6 +63,18 @@ describe("createOrder", () => {
     await expect(createOrder(buildCreateOrderRequest({ lines }))).rejects.toMatchObject({ code: "invalid-request" });
   });
 
+  it("rejects an offering date before today", async () => {
+    const request = buildCreateOrderRequest({ offeringDate: "2026-10-25" });
+
+    await expect(createOrder(request)).rejects.toMatchObject({ code: "invalid-request" });
+  });
+
+  it("accepts an offering date of today", async () => {
+    const order = await createOrder(buildCreateOrderRequest({ offeringDate: "2026-10-26" }));
+
+    expect(order.offeringDate).toBe("2026-10-26");
+  });
+
   it("keeps the placed order unchanged when the caller later edits its request", async () => {
     const request = buildCreateOrderRequest();
     const pending = createOrder(request);

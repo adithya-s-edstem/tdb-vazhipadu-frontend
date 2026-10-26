@@ -57,9 +57,9 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Ticket: #3
 - Context: the UI must tell a retryable network failure from a rule violation, and the server must own prices.
 - Decision: every rejection is an `ApiError` with `code` `network`, `not-found`, `invalid-request` or `conflict`.
-  `createOrder` prices lines from stored offerings, rejects inactive or other-temple offerings and non-positive
-  quantities, and returns status `confirmed`. Only `confirmed` orders can be cancelled. Responses and requests are
-  deep-copied so callers never share objects with the store.
+  `createOrder` prices lines from stored offerings, rejects inactive or other-temple offerings, non-positive
+  quantities and offering dates before today, and returns status `confirmed`. Only `confirmed` orders can be
+  cancelled. Responses and requests are deep-copied so callers never share objects with the store.
 - Alternatives: plain `Error` with messages (UI would parse strings); trusting client-sent prices (tamperable).
 
 ### D7: getOrders query defaults
