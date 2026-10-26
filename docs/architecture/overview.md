@@ -31,6 +31,8 @@ ui (pages, components)
   operations in [../product/mock-api.md](../product/mock-api.md) and the shared types. Never import
   `src/api/server/` from the frontend.
 - **Features** (`src/features/<feature>/`): one folder per problem area, containing hooks, components and tests.
+  Frontend business rules (cart total, offering date not in the past) live in the feature's `domain/` folder as pure,
+  framework-free functions; components and hooks call them and never re-implement them.
 - **Shared** (`src/shared/`): formatting, generic UI primitives. Nothing feature-specific.
 
 ## Directory layout
@@ -47,6 +49,7 @@ src/
       store/              in-memory collections
     types/                one file per domain type
   features/
+    <feature>/domain/     pure business rules for that feature
     offerings/            P1
     cart/                 P2
     order-form/           P2
