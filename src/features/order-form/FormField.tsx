@@ -27,7 +27,7 @@ export function FormField({ label, errorMessage, renderControl }: FormFieldProps
       </label>
       {renderControl({ id: controlId, "aria-invalid": hasError, "aria-describedby": hasError ? errorId : undefined })}
       {hasError && (
-        <p id={errorId} className="text-sm text-red-800">
+        <p id={errorId} role="alert" className="text-sm text-red-800">
           {errorMessage}
         </p>
       )}

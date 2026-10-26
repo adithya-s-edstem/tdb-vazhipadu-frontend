@@ -46,6 +46,31 @@ describe("OrderForm", () => {
     expect(screen.getByLabelText("Offering date")).toHaveAccessibleDescription("Choose the offering date.");
   });
 
+  it("announces each validation message to screen readers", async () => {
+    const user = userEvent.setup();
+    render(<OrderForm onSubmit={vi.fn()} isSubmitting={false} />);
+
+    await submit(user);
+
+    const announcements = screen.getAllByRole("alert").map((alert) => alert.textContent);
+    expect(announcements).toEqual([
+      "Enter the devotee's name.",
+      "Enter a phone number.",
+      "Choose a nakshatra.",
+      "Choose the offering date.",
+    ]);
+  });
+
+  it("moves focus to the first invalid field when the form is submitted", async () => {
+    const user = userEvent.setup();
+    render(<OrderForm onSubmit={vi.fn()} isSubmitting={false} />);
+    await fillForm(user, { phone: "12345" });
+
+    await submit(user);
+
+    expect(screen.getByLabelText("Phone")).toHaveFocus();
+  });
+
   it("marks only the invalid fields as invalid", async () => {
     const user = userEvent.setup();
     render(<OrderForm onSubmit={vi.fn()} isSubmitting={false} />);
