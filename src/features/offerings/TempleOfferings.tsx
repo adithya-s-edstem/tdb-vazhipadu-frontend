@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Temple } from "../../api/types";
+import { OtherTempleCartNotice } from "../cart/OtherTempleCartNotice";
 import { OfferingResults } from "./OfferingResults";
 import { OfferingSearch } from "./OfferingSearch";
 import { TemplePicker } from "./TemplePicker";
@@ -19,6 +20,7 @@ export function TempleOfferings({ temples, defaultTempleId }: TempleOfferingsPro
         <TemplePicker temples={temples} selectedTempleId={templeId} onSelect={setTempleId} />
         <OfferingSearch searchTerm={searchTerm} onSearch={setSearchTerm} />
       </div>
+      <OtherTempleCartNotice templeId={templeId} />
       <OfferingResults templeId={templeId} searchTerm={searchTerm} />
     </section>
   );

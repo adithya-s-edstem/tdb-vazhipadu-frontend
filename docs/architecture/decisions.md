@@ -85,3 +85,18 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Alternatives: showing inactive offerings greyed out (adds a row the devotee cannot act on); prefix-only search
   (misses "Swayamvara Pushpanjali" for "push"); no automatic retry (with a 10% failure rate, one in ten loads would
   show an error).
+
+### D9: Cart and order form rules
+- Status: accepted
+- Ticket: #5
+- Context: P2 leaves open temple mixing, phone formats, the meaning of "today", quantity limits and form persistence.
+- Decision: a cart holds offerings from one temple, because `createOrder` takes one `templeId`; adding from another
+  temple is disabled with a notice until the cart is emptied. Quantity is 1 to 10 per line (`quantityLimits` in
+  `src/features/cart/domain/`). Only the cart lines persist (Zustand `persist`, key `vazhipadu-cart`); the form does
+  not, so a devotee's name and phone are not left on a shared phone. Phone accepts a 10-digit Indian mobile starting
+  6–9, optionally prefixed `+91`, ignoring spaces and hyphens, and is submitted as the plain 10 digits. Today is a valid
+  offering date; "today" is the devotee's local date, matching the server rule in D6. `@hookform/resolvers` v5 bridges
+  React Hook Form and Zod 4 (v6 has an unresolvable optional peer conflict).
+- Alternatives: per-temple carts (`createOrder` would need several calls and P3 one confirmation); replacing the cart
+  silently when another temple's offering is added (loses the devotee's choices); persisting the form (stores personal
+  details in local storage); accepting landlines (no format the staff can call back reliably).
