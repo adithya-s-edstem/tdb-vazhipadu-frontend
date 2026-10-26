@@ -6,7 +6,8 @@ A typed module in `src/api/` that keeps data in memory and behaves like a real n
 
 - Every call returns a `Promise` and resolves after a random **200–1000 ms**.
 - Every call fails at a configurable rate, default **10%**, by rejecting with an error.
-- Tests must be able to set latency to zero and the failure rate to 0 or 1 to make behaviour deterministic.
+- Tests must be able to set latency to zero and the failure rate to 0 or 1 to make behaviour deterministic:
+  `configureMockApi({ minLatencyMs, maxLatencyMs, failureRate })` and `resetMockApi()` from `src/api/client`.
 
 ## Seed data
 
@@ -24,6 +25,10 @@ A typed module in `src/api/` that keeps data in memory and behaves like a real n
 | `createOrder(request)` | Place an order with one or more offerings |
 | `getOrders(query)` | List orders, with filters and pages |
 | `cancelOrder(orderId)` | Cancel an order |
+
+Types live in `src/api/types/`: `Temple`, `Offering`, `CreateOrderRequest`, `Order`, `OrdersQuery`, `OrdersPage`,
+`ApiError`. Query defaults and error codes are recorded in
+[D6 and D7](../architecture/decisions.md#d6-mock-api-errors-and-order-rules).
 
 Signatures may change (for example, adding parameters) when a problem needs it. Explain the change in the PR and record
 it in [../architecture/decisions.md](../architecture/decisions.md).
