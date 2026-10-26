@@ -81,6 +81,16 @@ describe("BookingPage cart", () => {
     expect(cartLine("Archana")).toHaveTextContent("₹100");
   });
 
+  it("announces the new quantity to screen readers when it changes", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<BookingPage />);
+    await addToCart(user, "Archana");
+
+    await user.click(within(cart()).getByRole("button", { name: "Increase quantity of Archana" }));
+
+    expect(within(cartLine("Archana")).getByRole("status")).toHaveTextContent("Quantity 2");
+  });
+
   it("does not let the quantity go below 1", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<BookingPage />);

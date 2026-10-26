@@ -24,7 +24,7 @@ export function QuantityStepper({ offeringId, offeringName, quantity }: Quantity
       >
         −
       </button>
-      <span className="min-w-20 text-center text-sm">Quantity {quantity}</span>
+      <output className="min-w-20 text-center text-sm">Quantity {quantity}</output>
       <button
         type="button"
         onClick={() => changeQuantity({ offeringId, quantity: quantity + 1 })}
