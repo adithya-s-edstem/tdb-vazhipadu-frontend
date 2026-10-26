@@ -1,4 +1,4 @@
-import { OfferingsPage } from "../features/offerings/OfferingsPage";
+import { BookingPage } from "./BookingPage";
 
 export function App() {
   return (
@@ -6,9 +6,8 @@ export function App() {
       <header className="bg-amber-700 px-4 py-3 text-white">
         <h1 className="text-xl font-semibold">Vazhipadu booking</h1>
       </header>
-      <main className="mx-auto max-w-3xl p-4">
-        <h2 className="mb-4 text-lg font-semibold">Offerings</h2>
-        <OfferingsPage />
+      <main className="mx-auto max-w-5xl p-4">
+        <BookingPage />
       </main>
     </div>
   );
