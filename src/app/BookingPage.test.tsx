@@ -28,6 +28,25 @@ async function fillCartWithPushpanjaliAndArchana(user: UserEvent): Promise<void>
   await addToCart(user, "Archana");
 }
 
+function devoteeDetails(): HTMLElement {
+  return screen.getByRole("region", { name: "Devotee details" });
+}
+
+function detailsStatus(): HTMLElement {
+  return within(devoteeDetails()).getByRole("status");
+}
+
+async function fillDevoteeDetails(user: UserEvent): Promise<void> {
+  await user.type(within(devoteeDetails()).getByLabelText("Name"), "Meera Nair");
+  await user.type(within(devoteeDetails()).getByLabelText("Phone"), "9847000001");
+  await user.selectOptions(within(devoteeDetails()).getByLabelText("Nakshatra"), "Rohini");
+  await user.type(within(devoteeDetails()).getByLabelText("Offering date"), "2026-11-02");
+}
+
+async function checkDetails(user: UserEvent): Promise<void> {
+  await user.click(within(devoteeDetails()).getByRole("button", { name: "Check details" }));
+}
+
 describe("BookingPage cart", () => {
   useInstantMockApi();
   useEmptyCart();
@@ -129,14 +148,38 @@ describe("BookingPage devotee details", () => {
     const user = userEvent.setup();
     renderWithQueryClient(<BookingPage />);
     await addToCart(user, "Pushpanjali");
-    const details = screen.getByRole("region", { name: "Devotee details" });
 
-    await user.type(within(details).getByLabelText("Name"), "Meera Nair");
-    await user.type(within(details).getByLabelText("Phone"), "9847000001");
-    await user.selectOptions(within(details).getByLabelText("Nakshatra"), "Rohini");
-    await user.type(within(details).getByLabelText("Offering date"), "2026-11-02");
-    await user.click(within(details).getByRole("button", { name: "Check details" }));
+    await fillDevoteeDetails(user);
+    await checkDetails(user);
 
-    expect(within(details).getByRole("status")).toHaveTextContent("Details look good.");
+    expect(detailsStatus()).toHaveTextContent("Details look good.");
+  });
+
+  it("withdraws the confirmation as soon as a field is changed", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<BookingPage />);
+    await addToCart(user, "Pushpanjali");
+    await fillDevoteeDetails(user);
+    await checkDetails(user);
+
+    await user.clear(within(devoteeDetails()).getByLabelText("Phone"));
+
+    expect(detailsStatus()).toBeEmptyDOMElement();
+  });
+
+  it("does not confirm details alongside an error after a later failed check", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<BookingPage />);
+    await addToCart(user, "Pushpanjali");
+    await fillDevoteeDetails(user);
+    await checkDetails(user);
+    const phone = within(devoteeDetails()).getByLabelText("Phone");
+    await user.clear(phone);
+    await user.type(phone, "12345");
+
+    await checkDetails(user);
+
+    expect(phone).toBeInvalid();
+    expect(detailsStatus()).toBeEmptyDOMElement();
   });
 });

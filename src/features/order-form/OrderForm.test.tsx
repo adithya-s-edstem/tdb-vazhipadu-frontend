@@ -36,7 +36,7 @@ describe("OrderForm", () => {
 
   it("shows each invalid field's own message next to it", async () => {
     const user = userEvent.setup();
-    render(<OrderForm onSubmit={vi.fn()} />);
+    render(<OrderForm onSubmit={vi.fn()} onDetailsInvalidated={vi.fn()} />);
 
     await submit(user);
 
@@ -48,7 +48,7 @@ describe("OrderForm", () => {
 
   it("marks only the invalid fields as invalid", async () => {
     const user = userEvent.setup();
-    render(<OrderForm onSubmit={vi.fn()} />);
+    render(<OrderForm onSubmit={vi.fn()} onDetailsInvalidated={vi.fn()} />);
     await fillForm(user, { phone: "12345" });
 
     await submit(user);
@@ -61,7 +61,7 @@ describe("OrderForm", () => {
   it("rejects a phone number that is not a 10-digit Indian mobile", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<OrderForm onSubmit={onSubmit} />);
+    render(<OrderForm onSubmit={onSubmit} onDetailsInvalidated={vi.fn()} />);
     await fillForm(user, { phone: "12345" });
 
     await submit(user);
@@ -75,7 +75,7 @@ describe("OrderForm", () => {
   it("rejects an offering date in the past", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<OrderForm onSubmit={onSubmit} />);
+    render(<OrderForm onSubmit={onSubmit} onDetailsInvalidated={vi.fn()} />);
     await fillForm(user, { offeringDate: "2026-10-25" });
 
     await submit(user);
@@ -89,7 +89,7 @@ describe("OrderForm", () => {
   it("accepts today as the offering date", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<OrderForm onSubmit={onSubmit} />);
+    render(<OrderForm onSubmit={onSubmit} onDetailsInvalidated={vi.fn()} />);
     await fillForm(user, { offeringDate: "2026-10-26" });
 
     await submit(user);
@@ -98,7 +98,7 @@ describe("OrderForm", () => {
   });
 
   it("offers all 27 nakshatras", () => {
-    render(<OrderForm onSubmit={vi.fn()} />);
+    render(<OrderForm onSubmit={vi.fn()} onDetailsInvalidated={vi.fn()} />);
 
     const options = within(screen.getByLabelText("Nakshatra")).getAllByRole("option");
 
@@ -108,7 +108,7 @@ describe("OrderForm", () => {
   it("submits the details with the phone as a plain 10-digit number", async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();
-    render(<OrderForm onSubmit={onSubmit} />);
+    render(<OrderForm onSubmit={onSubmit} onDetailsInvalidated={vi.fn()} />);
     await fillForm(user, { name: "  Meera Nair ", phone: "+91 98470 00001" });
 
     await submit(user);
@@ -118,7 +118,7 @@ describe("OrderForm", () => {
 
   it("clears a field's message once the devotee corrects it", async () => {
     const user = userEvent.setup();
-    render(<OrderForm onSubmit={vi.fn()} />);
+    render(<OrderForm onSubmit={vi.fn()} onDetailsInvalidated={vi.fn()} />);
     await submit(user);
 
     await user.type(screen.getByLabelText("Name"), "Meera Nair");

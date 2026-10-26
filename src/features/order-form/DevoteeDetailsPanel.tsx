@@ -10,7 +10,7 @@ export function DevoteeDetailsPanel() {
       <h2 id={headingId} className="mb-3 text-lg font-semibold">
         Devotee details
       </h2>
-      <OrderForm onSubmit={() => setAreDetailsChecked(true)} />
+      <OrderForm onSubmit={() => setAreDetailsChecked(true)} onDetailsInvalidated={() => setAreDetailsChecked(false)} />
       <p role="status" className="mt-3 text-green-800">
         {areDetailsChecked ? "Details look good." : ""}
       </p>

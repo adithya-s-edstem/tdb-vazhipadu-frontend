@@ -9,9 +9,10 @@ const ISO_DATE_FORMAT = "yyyy-MM-dd";
 
 interface OrderFormProps {
   onSubmit: (details: OrderDetails) => void;
+  onDetailsInvalidated: () => void;
 }
 
-export function OrderForm({ onSubmit }: OrderFormProps) {
+export function OrderForm({ onSubmit, onDetailsInvalidated }: OrderFormProps) {
   const {
     register,
     handleSubmit,
@@ -22,7 +23,12 @@ export function OrderForm({ onSubmit }: OrderFormProps) {
   });
 
   return (
-    <form noValidate onSubmit={handleSubmit((details) => onSubmit(details))} className="flex flex-col gap-4">
+    <form
+      noValidate
+      onChange={onDetailsInvalidated}
+      onSubmit={handleSubmit((details) => onSubmit(details), onDetailsInvalidated)}
+      className="flex flex-col gap-4"
+    >
       <FormField
         label="Name"
         errorMessage={errors.name?.message}
