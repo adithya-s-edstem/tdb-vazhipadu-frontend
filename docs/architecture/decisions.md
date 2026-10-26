@@ -72,3 +72,16 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
   P4 may extend this.
 - Alternatives: cursor pagination (no page numbers for the URL); returning all orders and paging in the UI (does not
   behave like a real API).
+
+### D8: Offerings list shows only bookable offerings
+- Status: accepted
+- Ticket: #4
+- Context: P1 leaves open whether inactive offerings are hidden or shown disabled, how search matches and which temple
+  is selected first.
+- Decision: inactive offerings are hidden (`isBookable` in `src/features/offerings/domain/` is the single rule).
+  Search trims the input, ignores case and matches anywhere in the name. The first temple returned by `getTemples`
+  is selected by default. Temple and search are component state, not URL state; the URL rule applies to staff list
+  filters (P4). Queries retry once before showing an error with a "Try again" button.
+- Alternatives: showing inactive offerings greyed out (adds a row the devotee cannot act on); prefix-only search
+  (misses "Swayamvara Pushpanjali" for "push"); no automatic retry (with a 10% failure rate, one in ten loads would
+  show an error).
