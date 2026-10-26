@@ -100,3 +100,18 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Alternatives: per-temple carts (`createOrder` would need several calls and P3 one confirmation); replacing the cart
   silently when another temple's offering is added (loses the devotee's choices); persisting the form (stores personal
   details in local storage); accepting landlines (no format the staff can call back reliably).
+
+### D10: Duplicate-safe order placement and inline confirmation
+- Status: accepted
+- Ticket: #6
+- Context: P3 asks whether duplicate protection is UI-only or also on `createOrder`, and where the confirmation lives.
+- Decision: both. `CreateOrderRequest` carries a required `idempotencyKey`; the server stores one order per key and
+  returns that order again for a repeated key, and rejects a blank key with `invalid-request`. The checkout creates a
+  key (`crypto.randomUUID`) on the first Place order, keeps it across failed attempts and drops it after a success.
+  Place order is also disabled while a request is in flight. The confirmation (order number and total) shows inline
+  above the cart and stays until the devotee chooses "Book more offerings"; it is not persisted, so a refresh shows
+  the booking page with the already emptied cart. Failures show one message and keep the cart and form; the devotee
+  retries with Place order. Mutations are not retried automatically.
+- Alternatives: disabled button only (a double-click can send two requests before React re-renders, which the
+  double-click test shows); rejecting a reused key whose request differs (no caller sends one, so it adds a rule with
+  no user); a confirmation route (needs the order fetched by id, which the mock API has no operation for).

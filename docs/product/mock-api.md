@@ -36,5 +36,7 @@ it in [../architecture/decisions.md](../architecture/decisions.md).
 ## Contract notes
 
 - Money is stored as integer rupees. Formatting to `₹` happens only in the UI.
-- `createOrder` must be safe against duplicate submission (see [P3](p3-order-confirmation.md)).
+- `createOrder` must be safe against duplicate submission (see [P3](p3-order-confirmation.md)). Every request carries
+  an `idempotencyKey`; resending a key returns the order already placed with it instead of a new one
+  ([D10](../architecture/decisions.md#d10-duplicate-safe-order-placement-and-inline-confirmation)).
 - `getOrders` returns a page of results plus the total count so the UI can render pagination.
