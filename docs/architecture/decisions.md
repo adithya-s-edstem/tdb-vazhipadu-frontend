@@ -117,3 +117,24 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Alternatives: disabled button only (a double-click can send two requests before React re-renders, which the
   double-click test shows); rejecting a reused key whose request differs (no caller sends one, so it adds a rule with
   no user); a confirmation route (needs the order fetched by id, which the mock API has no operation for).
+
+### D11: React Router 7 and Radix alert dialog
+- Status: accepted
+- Ticket: #7
+- Context: P4 keeps filters and page in the URL and must confirm before cancelling. React 18 is mandated.
+- Decision: `react-router` 7 (the newest major that supports React 18) with routes in `src/app/appRoutes.tsx`;
+  `@radix-ui/react-alert-dialog` for confirmations, which brings focus trapping, Escape and ARIA roles.
+- Alternatives: React Router 8 (needs React 19); `nuqs` for query state (a second URL library on top of the router);
+  `window.confirm` (unstyled, blocks the thread, cannot be tested by role); a hand-written modal (hand-rolled focus trap).
+
+### D12: Orders list filters, pages and cancelling
+- Status: accepted
+- Ticket: #7
+- Context: P4 open questions on the date filter, page size, empty pages, which orders can be cancelled and phone search.
+- Decision: the date filter is a single offering date; ten orders per page; changing any filter returns to page 1; a
+  page past the end (after filtering, cancelling or a hand-edited URL) is replaced with the last page. Only
+  `confirmed` orders can be cancelled, so cancelled and completed (past) orders show no cancel button. Phone search is
+  a partial match, submitted with Search or Enter. Filters are read from the URL through a Zod schema that drops
+  invalid values instead of failing.
+- Alternatives: a date range or placed date (staff plan by the day the offering happens); an empty page with a
+  message (an extra click for staff); searching on each keystroke (one history entry and request per digit).
