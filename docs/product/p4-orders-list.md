@@ -6,7 +6,7 @@ Temple staff use this screen to look up orders.
 
 ## Requirements
 
-- List orders with their date, devotee name, offerings, total and status.
+- List orders with their date, temple name, devotee name, offerings, total and status.
 - Filter by date and status, and search by phone number.
 - Show the orders in pages.
 - The filters and page survive a page refresh.
@@ -17,6 +17,7 @@ Temple staff use this screen to look up orders.
 - Filtering by status shows only matching orders and goes back to page 1.
 - Refreshing the page keeps the filters and the current page.
 - A cancelled order shows as cancelled without reloading the page.
+- Every order shows the name of the temple it was booked at, not its id.
 
 ## Open questions to decide in the PR
 
@@ -24,3 +25,4 @@ Temple staff use this screen to look up orders.
 - Page size, and what happens when the current page becomes empty after filtering or cancelling.
 - Can an already cancelled or past order be cancelled?
 - Is phone search exact or partial?
+- How is an order shown while temples are loading, if they fail to load, or if its temple is no longer listed?
