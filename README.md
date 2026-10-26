@@ -55,4 +55,18 @@ configureMockApi({ minLatencyMs: 0, maxLatencyMs: 0, failureRate: 0 });
 
 ## Pull requests
 
-Each problem ships as one PR, linked here as it is opened.
+The foundation and each problem shipped as one merged PR, in problem order:
+
+- M0 Foundation: [#9 Set up Vite app, tooling and mock API][pr-9]
+- P1 Offerings list: [#10 Show offerings for the selected temple with search][pr-10]
+- P2 Cart and order form: [#12 Add offering cart and order form][pr-12]
+- P3 Order confirmation: [#13 Place order with confirmation and duplicate protection][pr-13]
+- P4 Orders list: [#11 Add staff orders list with filters, pages and cancel][pr-11]
+- P5 Mobile and accessibility: [#14 Make booking flow mobile friendly and accessible][pr-14]
+
+[pr-9]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/9
+[pr-10]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/10
+[pr-12]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/12
+[pr-13]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/13
+[pr-11]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/11
+[pr-14]: https://github.com/adithya-s-edstem/tdb-vazhipadu-frontend/pull/14
