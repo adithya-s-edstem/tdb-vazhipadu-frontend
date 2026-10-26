@@ -7,12 +7,15 @@ import { ALL_ORDERS_QUERY_KEY } from "./ordersQueryKey";
 export function useCancelOrder() {
   const queryClient = useQueryClient();
 
-  function showCancelledOrder(cancelledOrder: Order): Promise<void> {
+  function showCancelledOrder(cancelledOrder: Order): void {
     queryClient.setQueriesData<OrdersPage>({ queryKey: ALL_ORDERS_QUERY_KEY }, (page) =>
       page ? withUpdatedOrder(page, cancelledOrder) : page,
     );
+  }
+
+  function refreshOrders(): Promise<void> {
     return queryClient.invalidateQueries({ queryKey: ALL_ORDERS_QUERY_KEY });
   }
 
-  return useMutation({ mutationFn: cancelOrder, onSuccess: showCancelledOrder });
+  return useMutation({ mutationFn: cancelOrder, onSuccess: showCancelledOrder, onSettled: refreshOrders });
 }

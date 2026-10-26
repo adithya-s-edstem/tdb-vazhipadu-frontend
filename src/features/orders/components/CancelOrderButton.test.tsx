@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { configureMockApi, getOrders } from "../../../api/client";
+import { cancelOrder, configureMockApi, getOrders } from "../../../api/client";
 import { renderRoute } from "../../../../test/renderRoute";
 import { useInstantMockApi } from "../../../../test/useInstantMockApi";
 
@@ -58,6 +58,17 @@ describe("CancelOrderButton", () => {
 
     expect(await within(row).findByRole("alert")).toHaveTextContent("The request failed. Please try again.");
     expect(row).toHaveTextContent("Confirmed");
+  });
+
+  it("shows the real status when someone else already cancelled the order", async () => {
+    const { user, cancelButton, orderId } = await openFirstCancellableOrder();
+    await cancelOrder(orderId);
+    await user.click(cancelButton);
+
+    await user.click(screen.getByRole("button", { name: "Cancel order" }));
+
+    const row = await screen.findByRole("row", { name: new RegExp(`${orderId}.*Cancelled`) });
+    expect(within(row).queryByRole("button", { name: `Cancel order ${orderId}` })).not.toBeInTheDocument();
   });
 
   it("offers no cancel button for cancelled or completed orders", async () => {
