@@ -152,3 +152,17 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
 - Alternatives: one error summary at the top of the form (a second place to keep in sync with field messages);
   axe-core in tests (another dependency, and it cannot measure contrast in jsdom); custom select widgets (lose native
   keyboard and screen reader behaviour).
+
+### D14: Orders list updating state
+- Status: accepted
+- Ticket: #17
+- Context: with `keepPreviousData`, a phone search, filter or page change kept the old rows with no sign that new
+  results were on their way.
+- Decision: "updating" means TanStack Query's `isPlaceholderData` (a new query key with no cached data yet). While
+  updating, an always-mounted polite `role="status"` above the table says "Updating orders…", the previous rows are
+  dimmed, the page buttons are disabled and a stale empty state is hidden. The results region's `aria-busy` follows
+  `isFetching`, so it is also true during the background refetch after a cancel, which shows no message and keeps
+  the table. Returning to a page already in the cache shows it at once without the message.
+- Alternatives: `isFetching` for the message (would announce every background refetch, including after a cancel); a
+  spinner overlay on the table (hides the rows staff were reading); dropping `keepPreviousData` (the table would
+  flash to the first-load status on each change).
