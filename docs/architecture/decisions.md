@@ -138,3 +138,17 @@ Append-only log. One entry per decision that outlives a single PR. Newest at the
   invalid values instead of failing.
 - Alternatives: a date range or placed date (staff plan by the day the offering happens); an empty page with a
   message (an extra click for staff); searching on each keystroke (one history entry and request per digit).
+
+### D13: Accessibility baseline
+- Status: accepted
+- Ticket: #8
+- Context: P5 asks for keyboard-only booking, announced errors, WCAG AA contrast and no horizontal scroll at 360 px.
+- Decision: a field's validation message is a `role="alert"` linked by `aria-describedby`, and React Hook Form moves
+  focus to the first invalid field on submit. `src/index.css` owns one visible `:focus-visible` outline (3 px
+  blue-700) and the placeholder colour (stone-600, 7.6:1). Control borders use stone-500 (4.8:1, above the 3:1
+  non-text minimum) and cart buttons are at least 40 px tall. Keyboard flow is covered by tests that reach every
+  control with Tab; jsdom cannot open a native `<select>`, so the nakshatra is chosen with `selectOptions` after
+  tabbing to it, and arrow-key selection is checked by hand in the browser.
+- Alternatives: one error summary at the top of the form (a second place to keep in sync with field messages);
+  axe-core in tests (another dependency, and it cannot measure contrast in jsdom); custom select widgets (lose native
+  keyboard and screen reader behaviour).

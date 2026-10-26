@@ -13,7 +13,7 @@ interface FormFieldProps {
 }
 
 export const FIELD_CONTROL_CLASSES =
-  "rounded border border-stone-300 bg-white px-3 py-2 aria-[invalid=true]:border-red-700 aria-[invalid=true]:bg-red-50";
+  "rounded border border-stone-500 bg-white px-3 py-2 aria-[invalid=true]:border-red-700 aria-[invalid=true]:bg-red-50";
 
 export function FormField({ label, errorMessage, renderControl }: FormFieldProps) {
   const controlId = useId();
@@ -27,7 +27,7 @@ export function FormField({ label, errorMessage, renderControl }: FormFieldProps
       </label>
       {renderControl({ id: controlId, "aria-invalid": hasError, "aria-describedby": hasError ? errorId : undefined })}
       {hasError && (
-        <p id={errorId} className="text-sm text-red-800">
+        <p id={errorId} role="alert" className="text-sm text-red-800">
           {errorMessage}
         </p>
       )}
